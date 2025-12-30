@@ -103,7 +103,7 @@ export const useConversation = ({ client, profile, maxIterations = 10 }: UseConv
       currentMessages.push(userMessage, agentMessage);
       setMessages(currentMessages);
       setStatus(i >= maxIterations ?'completed' : 'idle')
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Stop; Error in conversation:', error);
         return;
       }

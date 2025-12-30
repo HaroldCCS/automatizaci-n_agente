@@ -3,11 +3,13 @@ import { ChatCard } from '../components/ChatCard';
 import clientsData from '../data/clients.json';
 import profilesData from '../data/profiles.json';
 import type { Client, Profile } from '../types';
+import ManualChat from '../components/ManualChat';
 
 export const Dashboard = () => {
   const [autoStart, setAutoStart] = useState(false);
   const clients = clientsData as Client[];
   const profiles = profilesData as Profile[];
+  const [isManualMode, setIsManualMode] = useState(false);
 
   const initialClientsWithProfiles = clients.map((client, index) => ({
     id: `${client.NOMBRE_CLIENTE}-${index}`,
@@ -23,6 +25,10 @@ export const Dashboard = () => {
 
   const handleStartTests = () => {
     setAutoStart(true);
+  };
+
+  const handleStartManual = () => {
+    setIsManualMode(true);
   };
 
   return (
@@ -50,7 +56,16 @@ export const Dashboard = () => {
             >
               {autoStart ? 'Pruebas en Ejecución...' : 'Iniciar Pruebas Automáticas'}
             </button>
+            <button
+              onClick={handleStartManual}
+              disabled={isManualMode}
+              className="flex-1 py-3 px-6 rounded-lg font-semibold text-white transition-all bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
+            >
+              {isManualMode ? 'Prueba Manual en Ejecución...' : 'Iniciar Pruebas Manualmente'}
+            </button>
           </div>
+
+          {isManualMode && <ManualChat close={() => setIsManualMode(false)} />}
 
           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-blue-800 text-sm">
@@ -60,7 +75,7 @@ export const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activeConversations.map((item) => (
+          {autoStart && activeConversations.map((item) => (
             <ChatCard
               key={item.id}
               client={item.client}
